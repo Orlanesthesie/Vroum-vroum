@@ -12,20 +12,30 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        // Validation des données
         $validated = $request->validate([
             'lastname' => 'required|string|max:255',
             'firstname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        // Vérification et stockage de l'avatar
+        if ($request->hasFile('avatar')) {
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            $validated['avatar'] = $avatarPath;
+        }
+
+        // Création de l'utilisateur
         $user = User::create([
             'lastname' => $validated['lastname'],
             'firstname' => $validated['firstname'],
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'password' => Hash::make($validated['password']),'avatar' => $validated['avatar'] ?? null, // Ajout de l'avatar s'il existe
         ]);
 
+        // Génération du token JWT
         $token = JWTAuth::fromUser($user);
 
         return response()->json(compact('user', 'token'), 201);
