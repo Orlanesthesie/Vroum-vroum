@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
+
     public function store(Request $request)
     {
         $request->validate([
