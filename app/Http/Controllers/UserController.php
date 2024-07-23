@@ -36,10 +36,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $this->authorize('isAdmin');
-
         $users = User::all();
-
         return response()->json($users);
     }
 

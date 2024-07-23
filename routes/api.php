@@ -18,17 +18,22 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route de test pour vérifier si le JWT est valide
+Route::get('jwt-valid', function () {
+    return response()->json(['valid' => auth()->check()]);
 });
+
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 // Authentification routes
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
-Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api');
 
-// User management routes (requires admin middleware)
-Route::middleware('auth:sanctum', 'isAdmin')->group(function () {
+// User management routes
+Route::middleware('auth:api')->group(function () {
     Route::get('users', [UserController::class, 'index']);
     Route::get('users/{id}', [UserController::class, 'show']);
     Route::put('users/{id}', [UserController::class, 'update']);
@@ -36,7 +41,7 @@ Route::middleware('auth:sanctum', 'isAdmin')->group(function () {
 });
 
 // Trip management routes
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:api')->group(function () {
     Route::apiResource('trips', TripController::class);
     Route::get('search', [TripController::class, 'search']);
 });

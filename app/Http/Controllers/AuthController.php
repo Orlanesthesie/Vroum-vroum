@@ -32,8 +32,8 @@ class AuthController extends Controller
         $user = User::create([
             'lastname' => $validated['lastname'],
             'firstname' => $validated['firstname'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),'avatar' => $validated['avatar'] ?? null, // Ajout de l'avatar s'il existe
+            'email' => $validated['email'],'password' => Hash::make($validated['password']),
+            'avatar' => $validated['avatar'] ?? null, 
         ]);
 
         // Génération du token JWT
