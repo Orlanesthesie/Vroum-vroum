@@ -79,4 +79,34 @@ class TripController extends Controller
 
         return response()->json(['message' => 'Trip deleted']);
     }
+
+    public function search(Request $request)
+    {
+        dd($request->start);
+        // Récupère les paramètres de la requête
+        $start = $request->query('start');
+        $end = $request->query('end');
+        $date = $request->query('date');
+
+        // Construire la requête de recherche
+        $query = Trip::query();
+
+        if ($start) {
+            $query->where('starting_point', 'like', "%$start%");
+        }
+
+        if ($end) {
+            $query->where('ending_point', 'like', "%$end%");
+        }
+
+        if ($date) {
+            $query->whereDate('starting_at', $date);
+        }
+
+        // Exécute la requête et récupère les résultats
+        $trips = $query->get();
+
+        // Retourne les trajets filtrés en format JSON
+        return response()->json($trips);
+    }
 }
