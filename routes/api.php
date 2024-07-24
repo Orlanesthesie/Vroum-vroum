@@ -51,4 +51,3 @@ Route::middleware('auth:api')->group(function () {
 });
 
 Route::apiResource('trips', TripController::class)->middleware('auth:api');
-
