@@ -14,7 +14,6 @@ class AddTripIdToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            // Add the trip_id column as an unsigned big integer and set it as a foreign key
             $table->foreignId('trip_id')->nullable()->constrained()->onDelete('cascade');
         });
     }
@@ -27,7 +26,6 @@ class AddTripIdToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            // Drop the foreign key constraint and the column
             $table->dropForeign(['trip_id']);
             $table->dropColumn('trip_id');
         });

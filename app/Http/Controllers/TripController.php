@@ -4,19 +4,77 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Trip;
+use DateTime;
 use Illuminate\Support\Facades\Auth;
 
 class TripController extends Controller
 {
+
+    /**
+     * @OA\Get(
+     *     path="/api/trips",
+     *     summary="Get all trips",
+     *     tags={"Trips"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Trip"))
+     *     )
+     * )
+     */
+
     public function index()
     {
         return Trip::all();
     }
+    /**
+     * @OA\Get(
+     *     path="/api/trips/{id}",
+     *     summary="Get a trip by ID",
+     *     tags={"Trips"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Trip")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Trip not found"
+     *     )
+     * )
+     */
 
     public function show($id)
     {
         return Trip::findOrFail($id);
     }
+    /**
+     * @OA\Post(
+     *     path="/api/trips",
+     *     summary="Create a new trip",
+     *     tags={"Trips"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Trip")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Trip created successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Trip")
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error"
+     *     )
+     * )
+     */
 
     public function store(Request $request)
     {
@@ -28,10 +86,55 @@ class TripController extends Controller
             'price' => 'required|integer|min:0',
         ]);
 
-        $trip = Auth::user()->trips()->create($validated);
+        // dd($request->user);
+
+        $trip = $request->user()->trips()->create($validated);
+
+        // $trip = Auth::user()->trips()->create($validated);
+
+        // $trip = Trip::create([
+        //     'starting_point' => $request->input('starting_point'),
+        //     'ending_point' => $request->input('ending_point'),
+        //     'starting_at' => $request->input('starting_at'),
+        //     'available_places' => $request->input('available_places'),
+        //     'price' => $request->input('price'),
+        //     'user_id' => auth()->user()->id, // Associe le trajet à l'utilisateur connecté
+        // ]);
 
         return response()->json($trip, 201);
     }
+
+    /**
+     * @OA\Put(
+     *     path="/api/trips/{id}",
+     *     summary="Update a trip",
+     *     tags={"Trips"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Trip")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Trip updated successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Trip")
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Trip not found"
+     *     )
+     * )
+     */
 
     public function update(Request $request, $id)
     {
@@ -53,6 +156,33 @@ class TripController extends Controller
 
         return response()->json($trip);
     }
+    /**
+     * @OA\Delete(
+     *     path="/api/trips/{id}",
+     *     summary="Delete a trip",
+     *     tags={"Trips"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Trip deleted successfully",
+     *         @OA\JsonContent(type="object", @OA\Property(property="message", type="string"))
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Trip not found"
+     *     )
+     * )
+     */
 
     public function destroy($id)
     {
@@ -65,5 +195,88 @@ class TripController extends Controller
         $trip->delete();
 
         return response()->json(['message' => 'Trip deleted']);
+    }
+    /**
+     * @OA\Get(
+     *     path="/api/trips/search",
+     *     summary="Search trips",
+     *     tags={"Trips"},
+     *     @OA\Parameter(
+     *         name="starting_point",
+     *         in="query",
+     *         description="Starting point",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="ending_point",
+     *         in="query",
+     *         description="Ending point",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="starting_date",
+     *         in="query",
+     *         description="Starting date",
+     *         required=false,
+     *         @OA\Schema(type="string", format="date")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Trip"))
+     *     )
+     * )
+     */
+
+    public function search(Request $request)
+    {
+        $request->validate([
+            'starting_point' => 'required|string|max:255',
+            'ending_point' => 'required|string|max:255',
+            'starting_at' => 'required|date',
+        ]);
+
+        $startingPoint = $request->input('starting_point');
+        $endingPoint = $request->input('ending_point');
+        $startingAt = $request->input('starting_at');
+
+        $query = Trip::query();
+
+        // + mettre des conditions
+        if (!empty($startingPoint)) {
+            $query->where('starting_point', 'like', "%$startingPoint%");
+        }
+
+        if (!empty($endingPoint)) {
+            $query->where('ending_point', 'like', "%$endingPoint%");
+        }
+
+        if (!empty($startingAt) && $this->isValidDate($startingAt)) {
+            $query->whereDate('starting_at', $startingAt);
+        } else {
+            return response()->json(['error' => 'Invalid date format'], 400);
+        }
+
+        // if (!empty($startingAt)) {
+        //     // convertir la date 
+        //     $startingAt = date('Y-m-d', strtotime($startingAt));
+        //     $query->whereDate('starting_at', $startingAt);
+        // }
+
+        // // Logique de recherche de trajets
+        $trips = Trip::where('starting_point', 'like', "%$startingPoint%")
+        ->where('ending_point', 'like', "%$endingPoint%")
+        ->whereDate('starting_at', $startingAt)
+            ->get();
+
+        return response()->json($trips);
+    }
+
+    private function isValidDate($date)
+    {
+        $d = DateTime::createFromFormat('Y-m-d', $date);
+        return $d && $d->format('Y-m-d') === $date;
     }
 }
