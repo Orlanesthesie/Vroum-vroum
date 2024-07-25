@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Trip;
-use DateTime;
 use Illuminate\Support\Facades\Auth;
 
 class TripController extends Controller
@@ -242,41 +241,15 @@ class TripController extends Controller
         $endingPoint = $request->input('ending_point');
         $startingAt = $request->input('starting_at');
 
-        $query = Trip::query();
-
+        // retourner la date sous format 
         // + mettre des conditions
-        if (!empty($startingPoint)) {
-            $query->where('starting_point', 'like', "%$startingPoint%");
-        }
 
-        if (!empty($endingPoint)) {
-            $query->where('ending_point', 'like', "%$endingPoint%");
-        }
-
-        if (!empty($startingAt) && $this->isValidDate($startingAt)) {
-            $query->whereDate('starting_at', $startingAt);
-        } else {
-            return response()->json(['error' => 'Invalid date format'], 400);
-        }
-
-        // if (!empty($startingAt)) {
-        //     // convertir la date 
-        //     $startingAt = date('Y-m-d', strtotime($startingAt));
-        //     $query->whereDate('starting_at', $startingAt);
-        // }
-
-        // // Logique de recherche de trajets
+        // Logique de recherche de trajets
         $trips = Trip::where('starting_point', 'like', "%$startingPoint%")
         ->where('ending_point', 'like', "%$endingPoint%")
         ->whereDate('starting_at', $startingAt)
             ->get();
 
         return response()->json($trips);
-    }
-
-    private function isValidDate($date)
-    {
-        $d = DateTime::createFromFormat('Y-m-d', $date);
-        return $d && $d->format('Y-m-d') === $date;
     }
 }
