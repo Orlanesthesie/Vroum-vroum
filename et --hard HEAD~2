@@ -1,0 +1,79 @@
+[33mcommit 5950fca420e10f1596916182cf2b4d9bd2e53207[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m
+Author: JorgeRobles1993 <jorgejoanrobles93@gmail.com>
+Date:   Thu Jul 25 09:37:49 2024 +0200
+
+    Revert "fonction search en cours"
+    
+    This reverts commit cb87ea911f14621fba1f676f477da07536b34fe3.
+
+[33mcommit cb87ea911f14621fba1f676f477da07536b34fe3[m
+Author: Orlanesthesie <orlane.r.6@gmail.com>
+Date:   Thu Jul 25 09:10:50 2024 +0200
+
+    fonction search en cours
+
+[33mcommit 6656a7d2fd40f74807cabf2f0e4c9b2c5236617e[m
+Author: Orlanesthesie <orlane.r.6@gmail.com>
+Date:   Wed Jul 24 11:58:46 2024 +0200
+
+    + SWAGGER
+
+[33mcommit 99ed05e213a9a4e82427173580f9f8872d416119[m
+Author: Orlanesthesie <orlane.r.6@gmail.com>
+Date:   Tue Jul 23 15:25:23 2024 +0200
+
+    AVANT SWAGGER
+
+[33mcommit ef717f29b920fe3672d394744619acb165bff799[m
+Author: Orlanesthesie <orlane.r.6@gmail.com>
+Date:   Tue Jul 23 14:36:42 2024 +0200
+
+    toutes les routes OK
+
+[33mcommit 0833aa67f702457e71e05277ea2cb15aebb6e468[m
+Author: Orlanesthesie <orlane.r.6@gmail.com>
+Date:   Tue Jul 23 14:14:14 2024 +0200
+
+    +route create trip  statut 200
+
+[33mcommit b21a5cc1cca88cd1a151a0f72c18182e7148f779[m
+Author: Orlanesthesie <orlane.r.6@gmail.com>
+Date:   Tue Jul 23 12:06:31 2024 +0200
+
+    +route put user statut 200
+
+[33mcommit 16cb160d59831c1aac56bd01014ddccda30870ee[m
+Author: Orlanesthesie <orlane.r.6@gmail.com>
+Date:   Tue Jul 23 11:50:53 2024 +0200
+
+    +route logout statut 200
+
+[33mcommit 6bc2e3d10d5a1b50f5f464b025db37d42b7eba05[m
+Author: Orlanesthesie <orlane.r.6@gmail.com>
+Date:   Tue Jul 23 10:21:48 2024 +0200
+
+    +route users statut 200
+
+[33mcommit 4dedcd80bf179c4ed573a84b2a04d20277e53615[m
+Author: Orlanesthesie <orlane.r.6@gmail.com>
+Date:   Tue Jul 23 09:15:25 2024 +0200
+
+    +route login statut 200
+
+[33mcommit 78c59a42b458c4e6ab99664148deccf4f0f1c1ae[m
+Author: Orlanesthesie <orlane.r.6@gmail.com>
+Date:   Mon Jul 22 16:16:17 2024 +0200
+
+    Postman rentre en bdd avec erreur 500
+
+[33mcommit 204e7adbb368924c167b2d4f041441048a1d2d61[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Orlanesthesie <orlane.r.6@gmail.com>
+Date:   Mon Jul 22 12:22:47 2024 +0200
+
+    +model +controller+ migrations
+
+[33mcommit 7080ca4a40ce5871cf35ce09c8f275d303be2ea2[m
+Author: Orlanesthesie <orlane.r.6@gmail.com>
+Date:   Mon Jul 22 10:06:18 2024 +0200
+
+    nouveau projet
