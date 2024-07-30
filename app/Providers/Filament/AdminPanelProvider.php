@@ -26,10 +26,16 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
-            ->login(\Filament\Pages\Auth\Login::class) // -> This line will fix the issue
-            ->colors([
-                'primary' => Color::Amber,
+            ->login(\Filament\Pages\Auth\Login::class)
+            ->colors(['danger' => Color::Red,
+            'gray' => Color::Slate,
+            'info' => Color::Blue,
+            'primary' => Color::Indigo,
+            'success' => Color::Emerald,
+            'warning' => Color::Orange,
             ])
+            ->font('Quicksand')
+            ->brandName('Vroum Vroum')
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
             ->pages([
@@ -37,10 +43,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
             UsersTripsChart::class,
-            ])
+        ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
