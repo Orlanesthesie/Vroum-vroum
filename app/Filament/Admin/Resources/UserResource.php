@@ -9,7 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-
+use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class UserResource extends Resource
 {
@@ -18,7 +18,6 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $navigationGroup = 'Users Management';
-
 
     public static function form(Form $form): Form
     {

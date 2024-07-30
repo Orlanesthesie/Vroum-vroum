@@ -18,11 +18,11 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot()
-    {
-        Telescope::auth(function ($request) {
-            return app()->environment('local') ||
-                   (auth()->check() && auth()->user()->isAdmin());
-        });
-    }
+    // public function boot()
+    // {
+    //     Telescope::auth(function ($request) {
+    //         return app()->environment('local') ||
+    //                (auth()->check() && auth()->user()->isAdmin());
+    //     });
+    // }
 }

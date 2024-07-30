@@ -15,13 +15,16 @@ class StatsOverview extends BaseWidget
         $totalTrips = Trip::count();
 
         return [
-            Stat::make('Total Utilisateurs', $totalUsers)
+            Stat::make('Utilisateurs', $totalUsers)
                 ->description('Nombre total d\'utilisateurs')
-                ->icon('heroicon-o-user'),
+            ->icon('heroicon-o-user')
+            ->chart([7, 2, 10, 3, 15, 4, 17])
+            ->color('success'),
 
-            Stat::make('Total Trajets', $totalTrips)
+            Stat::make('Trajets', $totalTrips)
                 ->description('Nombre total de trajets')
-                ->icon('heroicon-o-truck'),
+            ->icon('heroicon-o-truck')
+            ->color('danger')
         ];
     }
 }

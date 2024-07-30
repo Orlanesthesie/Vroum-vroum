@@ -2,6 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Admin\Widgets\LatestTrips;
+use App\Filament\Admin\Widgets\LatestUsers;
+use App\Filament\Admin\Widgets\StatsOverview;
 use App\Filament\Admin\Widgets\UsersTripsChart;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -42,8 +45,10 @@ class AdminPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
-            ->widgets([
-            UsersTripsChart::class,
+            ->widgets([UsersTripsChart::class,
+            StatsOverview::class,
+            LatestTrips::class,
+            LatestUsers::class,
         ])
             ->middleware([
                 EncryptCookies::class,
