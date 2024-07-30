@@ -6,8 +6,8 @@ use Filament\Facades\Filament;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
-    public function getWidgets(): array
-    {
-        return Filament::getWidgets();
-    }
+    // public function getWidgets(): array
+    // {
+    //     return Filament::getWidgets();
+    // }
 }

@@ -13,6 +13,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -38,17 +39,17 @@ class AdminPanelProvider extends PanelProvider
             'warning' => Color::Orange,
             ])
             ->font('Quicksand')
-            ->brandName('Vroum Vroum')
+            ->brandName('Road2Love')
+            ->brandLogo('images/Road2Love.png')
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
             ->pages([
                 Pages\Dashboard::class,
+                
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
-            ->widgets([UsersTripsChart::class,
-            StatsOverview::class,
-            LatestTrips::class,
-            LatestUsers::class,
+            ->widgets([
+                StatsOverview::class,
         ])
             ->middleware([
                 EncryptCookies::class,
@@ -63,6 +64,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->renderHook(
+                'panels::body.end',
+                fn () => view('filament.custom.footer'),
+            );
     }
 }

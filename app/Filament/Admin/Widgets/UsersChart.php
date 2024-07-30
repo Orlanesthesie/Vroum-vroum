@@ -7,14 +7,15 @@ use App\Models\User;
 use App\Models\Trip;
 use Carbon\Carbon;
 
-class UsersTripsChart extends ChartWidget
+class UsersChart extends ChartWidget
 {
+    protected static ?int $sort = 3;
+    // protected int | string | array $columnSpan = 'full';
     protected static ?string $heading = 'Statistiques des Utilisateurs et Trajets';
 
     protected function getData(): array
     {
         $usersData = $this->getUsersData();
-        $tripsData = $this->getTripsData();
         $months = $this->getLast12Months();
 
         return [
@@ -25,12 +26,6 @@ class UsersTripsChart extends ChartWidget
                     'data' => array_values($usersData),
                     'borderColor' => '#4CAF50',
                     'backgroundColor' => 'rgba(76, 175, 80, 0.2)',
-                ],
-                [
-                    'label' => 'Trajets',
-                    'data' => array_values($tripsData),
-                    'borderColor' => '#FF9800',
-                    'backgroundColor' => 'rgba(255, 152, 0, 0.2)',
                 ],
             ],
         ];
@@ -48,20 +43,6 @@ class UsersTripsChart extends ChartWidget
 
         foreach ($months as $month) {
             $data[$month->format('Y-m')] = User::whereYear('created_at', $month->year)
-                ->whereMonth('created_at', $month->month)
-                ->count();
-        }
-
-        return $data;
-    }
-
-    private function getTripsData(): array
-    {
-        $data = [];
-        $months = $this->getLast12Months();
-
-        foreach ($months as $month) {
-            $data[$month->format('Y-m')] = Trip::whereYear('created_at', $month->year)
                 ->whereMonth('created_at', $month->month)
                 ->count();
         }
