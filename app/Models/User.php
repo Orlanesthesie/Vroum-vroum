@@ -19,6 +19,9 @@ class User extends Authenticatable implements JWTSubject
         'password', 'remember_token',
     ];
 
+    /**
+     * Define the relationship with trips.
+     */
     public function trips()
     {
         return $this->hasMany(Trip::class);
@@ -52,5 +55,15 @@ class User extends Authenticatable implements JWTSubject
     public function getNameAttribute()
     {
         return "{$this->firstname} {$this->lastname}";
+    }
+
+    /**
+     * Check if the user has the role of admin.
+     *
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 }
