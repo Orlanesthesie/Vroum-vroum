@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Log; 
+
 
 class AuthController extends Controller
 {
@@ -113,7 +115,10 @@ class AuthController extends Controller
         } catch (JWTException $e) {
             return response()->json(['error' => 'Could not create token'], 500);
         }
-
+        Log::info('User logged in', [
+     
+           var_dump($credentials)
+        ]);
         return response()->json(compact('token'));
     }
 

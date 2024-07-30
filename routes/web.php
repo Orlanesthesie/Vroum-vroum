@@ -17,3 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// En routes/web.php
+Route::get('/log-test', function () {
+    Log::info('This is a test log entry.');
+    return 'Log entry created!';
+});
