@@ -56,7 +56,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
         Gate::define('viewTelescope', function ($user) {
             // Define aquí quién puede ver Telescope, por ejemplo, solo administradores
             return in_array($user->email, [
-                'jorge@hotmail.com', // Agrega los correos de los administradores permitidos
+                'jorge@jorge1.com', // Agrega los correos de los administradores permitidos
             ]) || $user->isAdmin();     
         });
     }
