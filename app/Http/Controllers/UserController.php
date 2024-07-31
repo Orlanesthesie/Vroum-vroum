@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ReservationConfirmed;
+use App\Mail\ReservationCancelled;
+
 
 /**
  * @OA\Schema(
@@ -307,7 +309,7 @@ class UserController extends Controller
      * @OA\Post(
      *     path="/api/reservation",
      *     summary="Reserve a trip",
-     *     tags={"Reservation"},
+     *     tags={"Reservations"},
      *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
      *         required=true,
@@ -354,48 +356,127 @@ class UserController extends Controller
      */
 
      public function reservation(Request $request)
-     {
-         // Asegurarse de que el usuario esté autenticado
-         $user = Auth::user();
-         if (!$user) {
-             return response()->json(['error' => 'User not authenticated'], 401);
-         }
-     
-         // Validar el ID del viaje
-         $validatedData = $request->validate([
-             'trip_id' => 'required|exists:trips,id',
-         ]);
-     
-         // Obtener el ID del viaje
-         $tripId = $validatedData['trip_id'];
-     
-         // Obtener el array de trips del usuario, decodificando el JSON
-         $trips = json_decode($user->trip_id, true) ?? [];
-     
-         // Verificar si el usuario ya ha reservado este viaje
-         if (in_array($tripId, $trips)) {
-             return response()->json(['error' => 'You have already reserved this trip'], 400);
-         }
-     
-         // Verificar la disponibilidad del viaje
-         $trip = Trip::find($tripId);
-         if ($trip->available_places <= 0) {
-             return response()->json(['error' => 'No available places for this trip'], 400);
-         }
-     
-         // Agregar el trip_id al array de trips del usuario
-         $trips[] = $tripId;
-         $user->trip_id = json_encode($trips);
-         $user->save();
-     
-         // Reducir el número de plazas disponibles en el viaje
-         $trip->decrement('available_places');
-     
-         // Enviar correo de confirmación
-         Mail::to($user->email)->send(new ReservationConfirmed($trip));
-     
-         return response()->json(['message' => 'Trip reserved successfully'], 201);
-     }
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+
+        $validatedData = $request->validate([
+            'trip_id' => 'required|exists:trips,id',
+        ]);
+
+        $tripId = $validatedData['trip_id'];
+
+        $trips = json_decode($user->trip_id, true) ?? [];
+
+        if (in_array($tripId, $trips)) {
+            return response()->json(['error' => 'You have already reserved this trip'], 400);
+        }
+
+        $trip = Trip::find($tripId);
+        if ($trip->available_places <= 0) {
+            return response()->json(['error' => 'No available places for this trip'], 400);
+        }
+
+        $trips[] = $tripId;
+        $user->trip_id = json_encode($trips);
+        $user->save();
+
+        $trip->decrement('available_places');
+
+        Mail::to($user->email)->send(new ReservationConfirmed($trip));
+
+        return response()->json(['message' => 'Trip reserved successfully'], 201);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/cancel-reservation",
+     *     summary="Cancel a trip reservation",
+     *     tags={"Reservations"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="trip_id",
+     *                 type="integer",
+     *                 description="ID of the trip to cancel",
+     *                 example=1
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Trip cancelled successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Trip cancelled successfully"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="You have not reserved this trip",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="You have not reserved this trip"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="User not authenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="User not authenticated"
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function cancel(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+
+        $validatedData = $request->validate([
+            'trip_id' => 'required|exists:trips,id',
+        ]);
+
+        $tripId = $validatedData['trip_id'];
+
+        // Récupérer les réservations de l'utilisateur
+        $trips = json_decode($user->trip_id, true) ?? [];
+
+        // Vérifiez si l'utilisateur a réservé ce trajet
+        if (!in_array($tripId, $trips)) {
+            return response()->json(['error' => 'You have not reserved this trip'], 400);
+        }
+
+        // Retirer le trip_id du tableau des réservations de l'utilisateur
+        $trips = array_filter($trips, fn ($id) => $id != $tripId);
+        $user->trip_id = json_encode($trips);
+        $user->save();
+
+        // Augmenter le nombre de places disponibles pour le trajet annulé
+        $trip = Trip::find($tripId);
+        $trip->increment('available_places');
+
+        // // Envoyer un email de confirmation d'annulation
+        Mail::to($user->email)->send(new ReservationCancelled($trip));
+
+        return response()->json(['message' => 'Trip cancelled successfully'], 200);
+    }
 
 
 }

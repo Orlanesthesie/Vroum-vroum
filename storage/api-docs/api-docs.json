@@ -634,7 +634,7 @@
         "/api/reservation": {
             "post": {
                 "tags": [
-                    "Reservation"
+                    "Reservations"
                 ],
                 "summary": "Reserve a trip",
                 "operationId": "0acb34eda16e20b8948aa2cc955e65ce",
@@ -729,6 +729,87 @@
                                         "error": {
                                             "type": "string",
                                             "example": "Trip not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cancel-reservation": {
+            "post": {
+                "tags": [
+                    "Reservations"
+                ],
+                "summary": "Cancel a trip reservation",
+                "operationId": "2a8cc3e818934436370d00d28a873d5b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "trip_id": {
+                                        "description": "ID of the trip to cancel",
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Trip cancelled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Trip cancelled successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "You have not reserved this trip",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "You have not reserved this trip"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User not authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "User not authenticated"
                                         }
                                     },
                                     "type": "object"
@@ -870,8 +951,8 @@
             "description": "Users"
         },
         {
-            "name": "Reservation",
-            "description": "Reservation"
+            "name": "Reservations",
+            "description": "Reservations"
         }
     ]
 }

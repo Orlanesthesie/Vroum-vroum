@@ -55,3 +55,5 @@ Route::delete('trips/{id}', [TripController::class, 'destroy']);
 
 // Reservation management routes
 Route::post('reservation', [UserController::class, 'reservation']);
+Route::post('cancel', [UserController::class, 'cancel']);
+
