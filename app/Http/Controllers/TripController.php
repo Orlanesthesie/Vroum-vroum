@@ -128,20 +128,7 @@ class TripController extends Controller
             'price' => 'required|integer|min:0',
         ]);
 
-        // dd($request->user);
-
         $trip = $request->user()->trips()->create($validated);
-
-        // $trip = Auth::user()->trips()->create($validated);
-
-        // $trip = Trip::create([
-        //     'starting_point' => $request->input('starting_point'),
-        //     'ending_point' => $request->input('ending_point'),
-        //     'starting_at' => $request->input('starting_at'),
-        //     'available_places' => $request->input('available_places'),
-        //     'price' => $request->input('price'),
-        //     'user_id' => auth()->user()->id, // Associe le trajet à l'utilisateur connecté
-        // ]);
 
         return response()->json($trip, 201);
     }

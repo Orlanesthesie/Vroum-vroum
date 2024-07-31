@@ -14,6 +14,7 @@ class AddTripIdToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->json('trip_id')->nullable();
             $table->foreignId('trip_id')->nullable()->constrained()->onDelete('cascade');
         });
     }

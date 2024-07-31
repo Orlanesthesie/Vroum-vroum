@@ -12,11 +12,15 @@ class User extends Authenticatable implements JWTSubject
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'lastname', 'firstname', 'email', 'password', 'role', 'avatar',
+        'lastname', 'firstname', 'email', 'password', 'role', 'avatar', 'trips_id'
     ];
 
     protected $hidden = [
         'password', 'remember_token',
+    ];
+
+    protected $reservation = [
+        'trips_id' => 'array', // Cast trips as an array
     ];
 
     /**

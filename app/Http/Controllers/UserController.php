@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -272,7 +273,8 @@ class UserController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="User deleted successfully",
-     *         @OA\JsonContent(
+     *         @OA\JsonContent(r->update($request->except(['password', 'avatar']));
+
      *             @OA\Property(property="message", type="string", example="User deleted successfully")
      *         )
      *     ),
@@ -299,4 +301,45 @@ class UserController extends Controller
 
         return response()->json(['message' => 'User deleted successfully']);
     }
+
+
+    public function reservation(Request $request)
+    {
+        $user = Auth::user();
+
+        // Assurez-vous que $user est bien une instance de User
+        if (!$user instanceof User) {
+            return response()->json(['error' => 'User not authenticated or wrong type'], 400);
+        }
+
+        $request->validate([
+            'trip_id' => 'required|exists:trips,id',
+        ]);
+
+        // Récupérer et décoder le tableau des trips de l'utilisateur
+        $trips = json_decode($user->trip_id, true) ?? [];
+
+        // Vérifiez si l'utilisateur a déjà réservé ce trajet
+        if (in_array($request->trip_id, $trips)) {
+            return response()->json(['error' => 'You have already reserved this trip'], 400);
+        }
+
+        // Vérifiez la disponibilité du trajet
+        $trip = Trip::find($request->trip_id);
+        if ($trip->available_places <= 0) {
+            return response()->json(['error' => 'No available places for this trip'], 400);
+        }
+
+        // Ajouter le trip_id dans le tableau trips de l'utilisateur
+        $trips[] = $request->trip_id;
+        $user->trip_id = json_encode($trips);
+        $user->save();
+
+
+        $trip->decrement('available_places');
+
+        return response()->json(['message' => 'Trip reserved successfully'], 201);
+    }
+
+
 }
