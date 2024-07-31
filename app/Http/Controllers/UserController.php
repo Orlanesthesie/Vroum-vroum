@@ -273,8 +273,7 @@ class UserController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="User deleted successfully",
-     *         @OA\JsonContent(r->update($request->except(['password', 'avatar']));
-
+     *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="User deleted successfully")
      *         )
      *     ),
@@ -302,6 +301,55 @@ class UserController extends Controller
         return response()->json(['message' => 'User deleted successfully']);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/reservation",
+     *     summary="Reserve a trip",
+     *     tags={"Reservation"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="trip_id", type="integer", example=1, description="ID of the trip to reserve")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Trip reserved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Trip reserved successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="No available places for this trip")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Unauthorized")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="You have already reserved this trip")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Not Found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Trip not found")
+     *         )
+     *     )
+     * )
+     */
 
     public function reservation(Request $request)
     {
