@@ -15,6 +15,34 @@ class TripController extends Controller
      *     path="/api/trips",
      *     summary="Get all trips",
      *     tags={"Trips"},
+     *     @OA\Parameter(
+     *         name="start",
+     *         in="query",
+     *         description="Starting point of the trip",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="end",
+     *         in="query",
+     *         description="Ending point of the trip",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="date",
+     *         in="query",
+     *         description="Starting date of the trip",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             format="date"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -22,11 +50,25 @@ class TripController extends Controller
      *     )
      * )
      */
-
-    public function index()
+    public function index(Request $request)
     {
-        return Trip::all();
+        $query = Trip::query();
+
+        if ($request->has('start')) {
+            $query->where('starting_point', 'like', '%' . $request->start . '%');
+        }
+
+        if ($request->has('end')) {
+            $query->where('ending_point', 'like', '%' . $request->end . '%');
+        }
+
+        if ($request->has('date')) {
+            $query->whereDate('starting_at', $request->date);
+        }
+
+        return $query->get();
     }
+
     /**
      * @OA\Get(
      *     path="/api/trips/{id}",
@@ -196,87 +238,5 @@ class TripController extends Controller
 
         return response()->json(['message' => 'Trip deleted']);
     }
-    /**
-     * @OA\Get(
-     *     path="/api/trips/search",
-     *     summary="Search trips",
-     *     tags={"Trips"},
-     *     @OA\Parameter(
-     *         name="starting_point",
-     *         in="query",
-     *         description="Starting point",
-     *         required=false,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="ending_point",
-     *         in="query",
-     *         description="Ending point",
-     *         required=false,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="starting_date",
-     *         in="query",
-     *         description="Starting date",
-     *         required=false,
-     *         @OA\Schema(type="string", format="date")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Successful operation",
-     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Trip"))
-     *     )
-     * )
-     */
 
-    public function search(Request $request)
-    {
-        $request->validate([
-            'starting_point' => 'required|string|max:255',
-            'ending_point' => 'required|string|max:255',
-            'starting_at' => 'required|date',
-        ]);
-
-        $startingPoint = $request->input('starting_point');
-        $endingPoint = $request->input('ending_point');
-        $startingAt = $request->input('starting_at');
-
-        $query = Trip::query();
-
-        // + mettre des conditions
-        if (!empty($startingPoint)) {
-            $query->where('starting_point', 'like', "%$startingPoint%");
-        }
-
-        if (!empty($endingPoint)) {
-            $query->where('ending_point', 'like', "%$endingPoint%");
-        }
-
-        if (!empty($startingAt) && $this->isValidDate($startingAt)) {
-            $query->whereDate('starting_at', $startingAt);
-        } else {
-            return response()->json(['error' => 'Invalid date format'], 400);
-        }
-
-        // if (!empty($startingAt)) {
-        //     // convertir la date 
-        //     $startingAt = date('Y-m-d', strtotime($startingAt));
-        //     $query->whereDate('starting_at', $startingAt);
-        // }
-
-        // // Logique de recherche de trajets
-        $trips = Trip::where('starting_point', 'like', "%$startingPoint%")
-        ->where('ending_point', 'like', "%$endingPoint%")
-        ->whereDate('starting_at', $startingAt)
-            ->get();
-
-        return response()->json($trips);
-    }
-
-    private function isValidDate($date)
-    {
-        $d = DateTime::createFromFormat('Y-m-d', $date);
-        return $d && $d->format('Y-m-d') === $date;
-    }
 }

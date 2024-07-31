@@ -8,11 +8,13 @@ namespace App\Http\Controllers;
  *     version="1.0.0",
  *     description="This is the API documentation for the carpooling application."
  * )
- * 
- * @OA\Server(
- *     url=L5_SWAGGER_CONST_HOST,
- *     description="API Server"
+ * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT"
  * )
+ * 
  */
 class ApiDocController extends Controller
 {

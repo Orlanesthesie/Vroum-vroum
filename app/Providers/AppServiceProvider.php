@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
     // {
     //     Telescope::auth(function ($request) {
     //         return app()->environment('local') ||
-    //                (auth()->check() && auth()->user()->isAdmin());
+    //         (auth()->check() && auth()->user()->isAdmin());
     //     });
     // }
 }

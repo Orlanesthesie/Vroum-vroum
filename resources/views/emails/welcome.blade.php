@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenue à Car Covoit</title>
+    <title>Bienvenue à Road2Love</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -56,17 +56,17 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('images/logo.png') }}" alt="Car Covoit">
+            <img src="{{ asset('images/Road2Love.png') }}" alt="Road2Love">
         </div>
         <div class="content">
-            <h1>Bienvenue sur Car Covoit, {{ $user->firstname }} !</h1>
-            <p>Merci de vous être inscrit sur Car Covoit. Nous sommes ravis de vous accueillir dans notre communauté !</p>
+            <h1>Bienvenue sur Road2Love, {{ $user->firstname }} !</h1>
+            <p>Merci de vous être inscrit sur Road2Love. Nous sommes ravis de vous accueillir dans notre communauté !</p>
             <p>Pour commencer, vous pouvez explorer notre plateforme et découvrir toutes les fonctionnalités qui vous aideront à trouver les meilleurs trajets en covoiturage.</p>
             <a href="{{ url('/') }}" class="button">Commencer</a>
         </div>
         <div class="footer">
-            <p>Si vous avez des questions ou avez besoin d'aide, n'hésitez pas à nous contacter à <a href="mailto:support@carcovoit.com">support@carcovoit.com</a>.</p>
-            <p>&copy; {{ date('Y') }} Car Covoit. Tous droits réservés.</p>
+            <p>Si vous avez des questions ou avez besoin d'aide, n'hésitez pas à nous contacter à <a href="mailto:support@carcovoit.com">support@Road2Love.com</a>.</p>
+            <p>&copy; {{ date('Y') }} Road2Love. Tous droits réservés.</p>
         </div>
     </div>
 </body>

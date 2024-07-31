@@ -8,6 +8,69 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * @OA\Schema(
+ *     schema="User",
+ *     type="object",
+ *     title="User",
+ *     description="User model",
+ *     required={"lastname", "firstname", "email", "password"},
+ *     @OA\Property(
+ *         property="id",
+ *         type="integer",
+ *         description="ID of the user",
+ *         example=1
+ *     ),
+ *     @OA\Property(
+ *         property="lastname",
+ *         type="string",
+ *         description="Last name of the user",
+ *         example="Doe"
+ *     ),
+ *     @OA\Property(
+ *         property="firstname",
+ *         type="string",
+ *         description="First name of the user",
+ *         example="John"
+ *     ),
+ *     @OA\Property(
+ *         property="email",
+ *         type="string",
+ *         format="email",
+ *         description="Email address of the user",
+ *         example="john.doe@example.com"
+ *     ),
+ *     @OA\Property(
+ *         property="password",
+ *         type="string",
+ *         format="password",
+ *         description="Password of the user",
+ *         example="password123"
+ *     ),
+ *     @OA\Property(
+ *         property="avatar",
+ *         type="string",
+ *         description="Avatar image URL of the user",
+ *         example="avatars/johndoe.png"
+ *     ),
+ *     @OA\Property(
+ *         property="created_at",
+ *         type="string",
+ *         format="date-time",
+ *         description="Creation timestamp",
+ *         example="2024-07-01T12:00:00Z"
+ *     ),
+ *     @OA\Property(
+ *         property="updated_at",
+ *         type="string",
+ *         format="date-time",
+ *         description="Last update timestamp",
+ *         example="2024-07-15T12:00:00Z"
+ *     )
+ * )
+ */
+
+
 class UserController extends Controller
 {
 
