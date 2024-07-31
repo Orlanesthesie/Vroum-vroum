@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ReservationConfirmed;
 
 /**
  * @OA\Schema(
@@ -351,43 +353,49 @@ class UserController extends Controller
      * )
      */
 
-    public function reservation(Request $request)
-    {
-        $user = Auth::user();
-
-        // Assurez-vous que $user est bien une instance de User
-        if (!$user instanceof User) {
-            return response()->json(['error' => 'User not authenticated or wrong type'], 400);
-        }
-
-        $request->validate([
-            'trip_id' => 'required|exists:trips,id',
-        ]);
-
-        // Récupérer et décoder le tableau des trips de l'utilisateur
-        $trips = json_decode($user->trip_id, true) ?? [];
-
-        // Vérifiez si l'utilisateur a déjà réservé ce trajet
-        if (in_array($request->trip_id, $trips)) {
-            return response()->json(['error' => 'You have already reserved this trip'], 400);
-        }
-
-        // Vérifiez la disponibilité du trajet
-        $trip = Trip::find($request->trip_id);
-        if ($trip->available_places <= 0) {
-            return response()->json(['error' => 'No available places for this trip'], 400);
-        }
-
-        // Ajouter le trip_id dans le tableau trips de l'utilisateur
-        $trips[] = $request->trip_id;
-        $user->trip_id = json_encode($trips);
-        $user->save();
-
-
-        $trip->decrement('available_places');
-
-        return response()->json(['message' => 'Trip reserved successfully'], 201);
-    }
+     public function reservation(Request $request)
+     {
+         // Asegurarse de que el usuario esté autenticado
+         $user = Auth::user();
+         if (!$user) {
+             return response()->json(['error' => 'User not authenticated'], 401);
+         }
+     
+         // Validar el ID del viaje
+         $validatedData = $request->validate([
+             'trip_id' => 'required|exists:trips,id',
+         ]);
+     
+         // Obtener el ID del viaje
+         $tripId = $validatedData['trip_id'];
+     
+         // Obtener el array de trips del usuario, decodificando el JSON
+         $trips = json_decode($user->trip_id, true) ?? [];
+     
+         // Verificar si el usuario ya ha reservado este viaje
+         if (in_array($tripId, $trips)) {
+             return response()->json(['error' => 'You have already reserved this trip'], 400);
+         }
+     
+         // Verificar la disponibilidad del viaje
+         $trip = Trip::find($tripId);
+         if ($trip->available_places <= 0) {
+             return response()->json(['error' => 'No available places for this trip'], 400);
+         }
+     
+         // Agregar el trip_id al array de trips del usuario
+         $trips[] = $tripId;
+         $user->trip_id = json_encode($trips);
+         $user->save();
+     
+         // Reducir el número de plazas disponibles en el viaje
+         $trip->decrement('available_places');
+     
+         // Enviar correo de confirmación
+         Mail::to($user->email)->send(new ReservationConfirmed($trip));
+     
+         return response()->json(['message' => 'Trip reserved successfully'], 201);
+     }
 
 
 }
