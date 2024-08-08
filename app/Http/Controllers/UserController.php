@@ -238,7 +238,6 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         // $user = User::findOrFail($id);
         // $this->authorize('update', $user);
-
         $request->validate([
             'lastname' => 'string|max:255|nullable',
             'firstname' => 'string|max:255|nullable',
